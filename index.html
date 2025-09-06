@@ -16,11 +16,95 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
   <style>
-    /* ...All your existing CSS remains the same... */
+    :root{
+      --nav-height:72px;
+      --bg-1:#0a0a1a;
+      --bg-2:#111827;
+      --accent:#9333ea;
+      --accent-2:#3b82f6;
+      --glass:rgba(255,255,255,0.05);
+      --muted:rgba(255,255,255,0.7);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{font-family:'Poppins','Inter',system-ui,-apple-system,sans-serif;background:linear-gradient(135deg,var(--bg-1),var(--bg-2));color:#fff;overflow-x:hidden;position:relative;scroll-behavior:smooth;padding-top:var(--nav-height)}
+
+    .nav{position:fixed;top:0;left:0;right:0;height:var(--nav-height);display:flex;align-items:center;justify-content:space-between;padding:12px 36px;z-index:100;background:rgba(0,0,0,0.45);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,0.06)}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:18px;color:var(--accent)}
+    .logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#041022;box-shadow:0 0 10px rgba(59,130,246,0.12)}
+    .links{display:flex;gap:12px;align-items:center}
+
+    .btn{padding:10px 16px;border-radius:12px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .22s;display:inline-flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+    .btn::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,0.1);opacity:0;transition:opacity .3s}
+    .btn:hover::after{opacity:1}
+    .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 8px 28px rgba(59,130,246,0.12)}
+    .btn-ghost{border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:#fff}
+
+    main{max-width:1200px;margin:0 auto}
+    .hero{min-height:calc(100vh - var(--nav-height));display:flex;align-items:center;justify-content:center;padding:48px 6vw 80px;text-align:center;position:relative}
+    .hero h1{font-size:clamp(32px,6vw,64px);font-weight:800;line-height:1.02;margin-bottom:8px;opacity:0;transform:translateY(40px) scale(.95);animation:fadeZoom 1s forwards .3s}
+    .hero h1 span{background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;color:transparent}
+    .hero p{margin-top:10px;font-size:18px;color:var(--muted);opacity:0;animation:fadeIn 1s forwards .8s}
+    .hero-actions{margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center;opacity:0;transform:translateY(20px);animation:fadeUp .9s forwards 1.2s}
+
+    @keyframes fadeZoom{to{opacity:1;transform:translateY(0) scale(1)}}
+    @keyframes fadeIn{to{opacity:1}}
+    @keyframes fadeUp{to{opacity:1;transform:none}}
+
+    .reveal{opacity:0;transform:translateY(40px) scale(.96);transition:opacity .7s ease-out,transform .7s cubic-bezier(.2,.9,.2,1)}
+    .reveal.visible{opacity:1;transform:translateY(0) scale(1)}
+
+    .updates-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px}
+    .card{padding:18px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04);box-shadow:0 6px 18px rgba(2,6,23,0.6);opacity:0;transform:scale(.9);transition:all .5s ease}
+    .card.visible{opacity:1;transform:scale(1)}
+    .card h3{margin:0 0 8px;color:var(--accent)}
+
+    .modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:200}
+    .modal-backdrop.open{display:flex;animation:fadeIn .3s forwards}
+    .modal{width:min(520px,94%);background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);box-shadow:0 30px 60px rgba(2,6,23,0.7);transform:translateY(-20px) scale(.9);opacity:0;transition:all .28s ease-out}
+    .modal-backdrop.open .modal{transform:translateY(0) scale(1);opacity:1}
+    .modal h3{margin:0 0 6px}
+    .modal .row{display:flex;gap:8px;margin-top:12px}
+    .mono{font-family:monospace;font-weight:700;padding:10px;border-radius:8px;background:rgba(0,0,0,0.25);flex:1}
+
+    footer{padding:32px 6vw 48px;text-align:center;color:var(--muted);font-size:14px;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.3));margin-top:36px;opacity:0;animation:fadeIn 1.2s forwards 1.5s}
+    .ad-slot{max-width:728px;margin:0 auto 16px}
+
+    @media (max-width:720px){.nav{padding:10px 16px}.brand{font-size:16px}.hero{padding:36px 5vw}.btn{padding:8px 12px}}
   </style>
 </head>
 <body>
-  <!-- ...All your existing body content remains the same... -->
+  <nav class="nav">
+    <div class="brand"><div class="logo">MS</div> MultipleSMP</div>
+    <div class="links">
+      <a class="btn btn-ghost" href="#updates" id="updatesBtn">Updates</a>
+      <a class="btn btn-ghost" href="https://discord.multiplesmp.net" target="_blank" rel="noopener">Discord</a>
+      <button class="btn btn-primary" id="playBtn">Play Now</button>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div>
+        <h1>Join the <span>Ultimate SMP Experience</span></h1>
+        <p>IP: <strong>MultipleSMP.net</strong> • Port: <strong>30010</strong></p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-copy="MultipleSMP.net">Copy IP</button>
+          <button class="btn btn-primary" data-copy="30010">Copy Port</button>
+          <a class="btn btn-ghost" href="https://shop.multiplesmp.net" target="_blank">Shop</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="updates" class="reveal">
+      <h2>Latest Updates</h2>
+      <div class="updates-grid">
+        <article class="card"><h3>🎃 Halloween Event</h3><p>Spooky bosses, new loot, and limited-time cosmetics.</p></article>
+        <article class="card"><h3>💰 Economy Revamp</h3><p>Balanced trading, improved land-claims, and rewards.</p></article>
+        <article class="card"><h3>⚔️ Boss Arena</h3><p>Face custom bosses and earn leaderboard spots.</p></article>
+      </div>
+    </section>
+  </main>
 
   <footer>
     <div class="ad-slot">
@@ -36,7 +120,56 @@
   </footer>
 
   <script>
-    /* ...All your existing JS remains the same... */
+    document.querySelectorAll('[data-copy]').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const text = btn.getAttribute('data-copy');
+        const old = btn.innerHTML;
+        try{
+          await navigator.clipboard.writeText(text);
+          btn.innerHTML = 'Copied!'; setTimeout(()=> btn.innerHTML = old,1200);
+        }catch{
+          const ta = document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); btn.innerHTML='Copied!'; setTimeout(()=>btn.innerHTML=old,1200);}catch(e){alert('Copy failed.')} ta.remove();
+        }
+      });
+    });
+
+    const updatesBtn = document.getElementById('updatesBtn');
+    const updatesSec = document.getElementById('updates');
+    updatesBtn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const navHeight = document.querySelector('.nav').offsetHeight || 72;
+      const top = updatesSec.getBoundingClientRect().top + window.scrollY - navHeight - 12;
+      window.scrollTo({top, behavior:'smooth'});
+      updatesSec.classList.add('visible');
+      document.querySelectorAll('#updates .card').forEach((c,i)=>{setTimeout(()=>c.classList.add('visible'),200*i);});
+    });
+
+    const reveals = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries, obs)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('visible');
+          if(entry.target.id==='updates'){
+            document.querySelectorAll('#updates .card').forEach((c,i)=>{setTimeout(()=>c.classList.add('visible'),200*i);});
+          }
+          obs.unobserve(entry.target);
+        }
+      });
+    },{threshold:0.15});
+    reveals.forEach(r=>revealObserver.observe(r));
+
+    const playBtn = document.getElementById('playBtn');
+    const backdrop = document.createElement('div');
+    backdrop.className='modal-backdrop';
+    backdrop.innerHTML=`<div class="modal"><h3>Join MultipleSMP</h3><div class="row"><div class="mono">MultipleSMP.net</div><button class="btn btn-primary" data-copy="MultipleSMP.net">Copy</button></div><div class="row"><div class="mono">30010</div><button class="btn btn-primary" data-copy="30010">Copy</button></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px"><button class="btn btn-ghost" id="modalClose">Close</button></div></div>`;
+    document.body.appendChild(backdrop);
+    const modalClose = document.getElementById('modalClose');
+    function openModal(){ backdrop.classList.add('open'); document.body.style.overflow='hidden'; }
+    function closeModal(){ backdrop.classList.remove('open'); document.body.style.overflow=''; }
+    playBtn.addEventListener('click', openModal);
+    modalClose.addEventListener('click', closeModal);
+    backdrop.addEventListener('click', e=>{ if(e.target===backdrop) closeModal(); });
+    window.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
   </script>
 </body>
 </html>
