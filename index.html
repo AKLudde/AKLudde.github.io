@@ -1,280 +1,233 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MultipleSMP</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MultipleSMP — Play Now</title>
+  <meta name="description" content="MultipleSMP — Join the server: MultipleSMP.net:30010. Epic SMP, live events, cosmetics, community." />
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --nav-height:72px;
+      --bg-1: #0a0a1a;
+      --bg-2: #111827;
+      --accent: #9333ea;
+      --accent-2: #3b82f6;
+      --glass: rgba(255,255,255,0.05);
+      --muted: rgba(255,255,255,0.7);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: 'Poppins','Inter',system-ui,-apple-system,sans-serif;
+      background:linear-gradient(135deg,var(--bg-1),var(--bg-2));
+      color:#fff;overflow-x:hidden;position:relative;scroll-behavior:smooth;padding-top:var(--nav-height);
+    }
 
-  body {
-    font-family: 'Arial', sans-serif;
-    background: #1a1a1a;
-    color: #fff;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+    /* Navbar */
+    .nav{position:fixed;top:0;left:0;right:0;height:var(--nav-height);display:flex;align-items:center;justify-content:space-between;padding:12px 36px;z-index:100;background:rgba(0,0,0,0.45);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,0.06)}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:18px;color:var(--accent)}
+    .logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#041022;box-shadow:0 0 10px rgba(59,130,246,0.12)}
+    .links{display:flex;gap:12px;align-items:center}
 
-  header {
-    text-align: center;
-    padding: 60px 20px 40px 20px;
-    background: #111;
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-  }
+    /* Buttons */
+    .btn{padding:10px 16px;border-radius:12px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .22s;display:inline-flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+    .btn::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,0.1);opacity:0;transition:opacity .3s}
+    .btn:hover::after{opacity:1}
+    .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 8px 28px rgba(59,130,246,0.12)}
+    .btn-ghost{border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:#fff}
 
-  header h1 {
-    font-family: 'Press Start 2P', cursive;
-    font-size: clamp(2rem, 5vw, 3rem);
-    color: #00ff99;
-    text-shadow: 0 0 8px #00ff99;
-  }
+    /* Layout / hero */
+    main{max-width:1200px;margin:0 auto}
+    .hero{min-height:calc(100vh - var(--nav-height));display:flex;align-items:center;justify-content:center;padding:48px 6vw 80px;text-align:center;position:relative}
+    .hero h1{font-size:clamp(32px,6vw,64px);font-weight:800;line-height:1.02;margin-bottom:8px;opacity:0;transform:translateY(40px) scale(.95);animation:fadeZoom 1s forwards .3s}
+    .hero h1 span{background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;color:transparent}
+    .hero p{margin-top:10px;font-size:18px;color:var(--muted);opacity:0;animation:fadeIn 1s forwards .8s}
+    .hero-actions{margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center;opacity:0;transform:translateY(20px);animation:fadeUp .9s forwards 1.2s}
 
-  .main {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    max-width: 1200px;
-    margin: 40px auto;
-    gap: 40px;
-    padding: 0 20px;
-  }
+    @keyframes fadeZoom{to{opacity:1;transform:translateY(0) scale(1)}}
+    @keyframes fadeIn{to{opacity:1}}
+    @keyframes fadeUp{to{opacity:1;transform:none}}
 
-  .panel {
-    background: #222;
-    border-radius: 20px;
-    padding: 30px;
-    flex: 1 1 300px;
-    min-width: 280px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-    transition: transform 0.3s, background 0.3s;
-    opacity: 0;
-    transform: translateY(50px);
-    animation: slideUp 1s forwards;
-  }
+    /* Reveal */
+    .reveal{opacity:0;transform:translateY(40px) scale(.96);transition:opacity .7s ease-out,transform .7s cubic-bezier(.2,.9,.2,1)}
+    .reveal.visible{opacity:1;transform:translateY(0) scale(1)}
 
-  .panel:nth-child(2) { animation-delay: 0.2s; }
-  .panel:nth-child(3) { animation-delay: 0.4s; }
+    /* Cards */
+    .updates-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px}
+    .card{padding:18px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04);box-shadow:0 6px 18px rgba(2,6,23,0.6);opacity:0;transform:scale(.9);transition:all .5s ease}
+    .card.visible{opacity:1;transform:scale(1)}
+    .card h3{margin:0 0 8px;color:var(--accent)}
 
-  @keyframes slideUp {
-    to { opacity: 1; transform: translateY(0); }
-  }
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);z-index:200}
+    .modal-backdrop.open{display:flex;animation:fadeIn .3s forwards}
+    .modal{width:min(520px,94%);background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);box-shadow:0 30px 60px rgba(2,6,23,0.7);transform:translateY(-20px) scale(.9);opacity:0;transition:all .28s ease-out}
+    .modal-backdrop.open .modal{transform:translateY(0) scale(1);opacity:1}
+    .modal h3{margin:0 0 6px}
+    .modal .row{display:flex;gap:8px;margin-top:12px}
+    .mono{font-family:monospace;font-weight:700;padding:10px;border-radius:8px;background:rgba(0,0,0,0.25);flex:1}
 
-  .panel h2 {
-    font-family: 'Press Start 2P', cursive;
-    color: #00ff99;
-    margin-bottom: 15px;
-    font-size: 1.4rem;
-  }
+    /* Footer & Ad spot */
+    footer{padding:32px 6vw 48px;text-align:center;color:var(--muted);font-size:14px;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.3));margin-top:36px;opacity:0;animation:fadeIn 1.2s forwards 1.5s}
+    .ad-slot{max-width:728px;margin:0 auto 16px}
 
-  .panel p { line-height: 1.6; font-size: 1rem; margin-bottom: 15px; }
-
-  .btn {
-    display: inline-block;
-    padding: 12px 25px;
-    font-size: 1rem;
-    color: #fff;
-    background: #444;
-    border: none;
-    border-radius: 12px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
-
-  .btn:hover { background: #00ff99; color: #111; transform: translateY(-3px); }
-
-  .server-ip {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #333;
-    padding: 12px 20px;
-    border-radius: 12px;
-    margin-top: 15px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-
-  .server-ip:hover { background: #444; }
-
-  .copy-btn {
-    padding: 8px 16px;
-    font-size: 0.9rem;
-    border: none;
-    border-radius: 8px;
-    background: #555;
-    color: #fff;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-
-  .copy-btn:hover { background: #00ff99; color: #111; }
-
-  .status {
-    margin-top: 15px;
-    font-size: 1rem;
-    padding: 10px 20px;
-    border-radius: 12px;
-    font-weight: bold;
-    display: inline-block;
-    text-align: center;
-  }
-
-  .online { background: #003300; border: 2px solid #00ff99; }
-  .offline { background: #330000; border: 2px solid #ff3333; }
-  .loading { background: #333300; border: 2px solid #ffff00; }
-
-  footer {
-    background: #111;
-    padding: 20px;
-    text-align: center;
-    border-top-left-radius: 30px;
-    border-top-right-radius: 30px;
-    box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
-  }
-
-  /* TOS Page */
-  #tos-page {
-    position: fixed;
-    top: 0; right: -100%;
-    width: 100%;
-    height: 100%;
-    background: #111;
-    color: #fff;
-    overflow-y: auto;
-    padding: 40px 20px;
-    transition: right 0.5s ease;
-    z-index: 1000;
-  }
-
-  #tos-page.active { right: 0; }
-
-  #tos-page h1 {
-    font-family: 'Press Start 2P', cursive;
-    color: #00ff99;
-    text-align: center;
-    margin-bottom: 30px;
-  }
-
-  #tos-page p {
-    line-height: 1.6;
-    margin-bottom: 15px;
-  }
-
-  #close-tos {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #444;
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
-
-  #close-tos:hover { background: #00ff99; color: #111; }
-
-  @media(max-width: 768px) {
-    .main { flex-direction: column; align-items: center; }
-    .server-ip { flex-direction: column; gap: 10px; }
-    .btn, .copy-btn { width: 100%; }
-  }
-</style>
+    /* Responsive tweaks */
+    @media (max-width:720px){
+      .nav{padding:10px 16px}
+      .brand{font-size:16px}
+      .hero{padding:36px 5vw}
+      .btn{padding:8px 12px}
+    }
+  </style>
 </head>
 <body>
-
-<header>
-  <h1>MultipleSMP</h1>
-</header>
-
-<div class="main">
-  <div class="panel">
-    <h2>Join Our Community</h2>
-    <p>Connect with players worldwide in our fun and friendly SMP server.</p>
-    <a href="https://discord.gg/JKsKhSnd5x" class="btn" target="_blank">Join Discord</a>
-  </div>
-
-  <div class="panel">
-    <h2>Server IP</h2>
-    <div class="server-ip" onclick="copyIP()">
-      <span id="server-ip-text">Not Released Yet..</span>
-      <button class="copy-btn">Copy</button>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="brand"><div class="logo" aria-hidden="true">MS</div> MultipleSMP</div>
+    <div class="links">
+      <a class="btn btn-ghost" href="#updates" id="updatesBtn">Updates</a>
+      <a class="btn btn-ghost" href="https://discord.multiplesmp.net" target="_blank" rel="noopener">Discord</a>
+      <button class="btn btn-primary" id="playBtn">Play Now</button>
     </div>
-    <div id="server-status" class="status loading">⏳ Checking server status...</div>
-    <button class="btn" style="margin-top:20px;" onclick="openTOS()">Terms of Service</button>
+  </nav>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div>
+        <h1 id="hero-title">Join the <span class="typing">Ultimate SMP Experience</span></h1>
+        <p>IP: <strong>MultipleSMP.net</strong> • Port: <strong>30010</strong></p>
+
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-copy="MultipleSMP.net">Copy IP</button>
+          <button class="btn btn-primary" data-copy="30010">Copy Port</button>
+          <a class="btn btn-ghost" href="https://shop.multiplesmp.net" target="_blank" rel="noopener">Shop</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Updates -->
+    <section id="updates" class="reveal" aria-labelledby="updates-title">
+      <h2 id="updates-title">Latest Updates</h2>
+      <div class="updates-grid">
+        <article class="card">
+          <h3>🎃 Halloween Event</h3>
+          <p>Spooky bosses, new loot, and limited-time cosmetics.</p>
+        </article>
+        <article class="card">
+          <h3>💰 Economy Revamp</h3>
+          <p>Balanced trading, improved land-claims, and rewards.</p>
+        </article>
+        <article class="card">
+          <h3>⚔️ Boss Arena</h3>
+          <p>Face custom bosses and earn leaderboard spots.</p>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="ad-slot">
+      <!-- Google AdSense placeholder — replace with your own publisher & slot IDs -->
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-xxxxxxxxxxxxxxxx"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+    </div>
+    © 2025 MultipleSMP • IP: MultipleSMP.net : 30010
+  </footer>
+
+  <!-- Join modal -->
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal" role="document" aria-labelledby="join-title">
+      <h3 id="join-title">Join MultipleSMP</h3>
+      <p class="muted">Copy the server details or follow the quick connect guide.</p>
+
+      <div class="row">
+        <div class="mono">MultipleSMP.net</div>
+        <button class="btn btn-primary" data-copy="MultipleSMP.net">Copy</button>
+      </div>
+
+      <div class="row">
+        <div class="mono">30010</div>
+        <button class="btn btn-primary" data-copy="30010">Copy</button>
+      </div>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+        <button class="btn btn-ghost" id="modalClose">Close</button>
+        <a class="btn btn-primary" href="/connect-instructions.html">How to connect</a>
+      </div>
+    </div>
   </div>
 
-  <div class="panel">
-    <h2>Features</h2>
-    <p>Custom plugins, economy, fun events. Join Now!</p>
-  </div>
-</div>
+  <!-- Scripts -->
+  <script>
+    // Copy buttons
+    document.querySelectorAll('[data-copy]').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const text = btn.getAttribute('data-copy');
+        const old = btn.innerHTML;
+        try{
+          await navigator.clipboard.writeText(text);
+          btn.innerHTML = 'Copied!';
+          setTimeout(()=> btn.innerHTML = old, 1200);
+        }catch(err){
+          const ta = document.createElement('textarea');
+          ta.value = text; document.body.appendChild(ta); ta.select();
+          try{ document.execCommand('copy'); btn.innerHTML='Copied!'; setTimeout(()=>btn.innerHTML=old,1200);}catch(e){ alert('Copy failed.'); }
+          ta.remove();
+        }
+      });
+    });
 
-<footer>
-  © 2025 MultipleSMP. All Rights Reserved.
-</footer>
+    // Smooth scroll Updates
+    const updatesBtn = document.getElementById('updatesBtn');
+    const updatesSec = document.getElementById('updates');
+    updatesBtn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const navHeight = document.querySelector('.nav').offsetHeight || 72;
+      const top = updatesSec.getBoundingClientRect().top + window.scrollY - navHeight - 12;
+      window.scrollTo({top, behavior:'smooth'});
+      updatesSec.classList.add('visible');
+      document.querySelectorAll('#updates .card').forEach((c,i)=>{
+        setTimeout(()=>c.classList.add('visible'), 200*i);
+      });
+    });
 
-<!-- Terms of Service Page -->
-<div id="tos-page">
-  <button id="close-tos" onclick="closeTOS()">Close</button>
-  <h1>Terms of Service</h1>
-  <p>Welcome to MultipleSMP! By accessing or using our server, you agree to comply with the following rules and terms:</p>
-  <p><strong>1. Respect Others:</strong> Harassment, bullying, or offensive language will not be tolerated.</p>
-  <p><strong>2. Account Responsibility:</strong> You are responsible for your account. Sharing accounts is not allowed.</p>
-  <p><strong>3. No Exploits:</strong> Using glitches or hacks is forbidden and may result in a permanent ban.</p>
-  <p><strong>4. Discord Rules:</strong> All server rules apply on our Discord server as well.</p>
-  <p><strong>5. Moderation:</strong> Admins and moderators reserve the right to enforce rules at their discretion.</p>
-  <p><strong>6. Changes:</strong> MultipleSMP reserves the right to update the Terms of Service at any time.</p>
-  <p>By playing on MultipleSMP, you acknowledge that you have read, understood, and agree to these terms.</p>
-</div>
+    // Intersection observer for reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries, obs)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('visible');
+          if(entry.target.id==='updates'){
+            document.querySelectorAll('#updates .card').forEach((c,i)=>{
+              setTimeout(()=>c.classList.add('visible'), 200*i);
+            });
+          }
+          obs.unobserve(entry.target);
+        }
+      });
+    },{threshold:0.15});
+    reveals.forEach(r=>revealObserver.observe(r));
 
-<script>
-function copyIP() {
-  const ip = document.getElementById("server-ip-text").innerText;
-  navigator.clipboard.writeText(ip).then(() => { alert("Server IP copied: " + ip); });
-}
+    // Modal logic
+    const playBtn = document.getElementById('playBtn');
+    const backdrop = document.getElementById('modalBackdrop');
+    const modalClose = document.getElementById('modalClose');
+    function openModal(){ backdrop.classList.add('open'); backdrop.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; setTimeout(()=>{ const first = backdrop.querySelector('[data-copy]'); if(first) first.focus(); },160); }
+    function closeModal(){ backdrop.classList.remove('open'); backdrop.setAttribute('aria-hidden','true'); document.body.style.overflow=''; playBtn.focus(); }
+    playBtn.addEventListener('click', openModal);
+    modalClose.addEventListener('click', closeModal);
+    backdrop.addEventListener('click', e=>{ if(e.target === backdrop) closeModal(); });
+    window.addEventListener('keydown', e=>{ if(e.key === 'Escape') closeModal(); });
+  </script>
 
-async function fetchServerStatus() {
-  const ip = document.getElementById("server-ip-text").innerText;
-  const statusDiv = document.getElementById("server-status");
-  statusDiv.className = "status loading";
-  statusDiv.innerHTML = "⏳ Checking server status...";
-
-  try {
-    const response = await fetch(`https://api.mcsrvstat.us/2/${ip}`);
-    const data = await response.json();
-
-    if (data.online) {
-      statusDiv.className = "status online";
-      statusDiv.innerHTML = `✅ Online <br>Players: ${data.players.online} / ${data.players.max}`;
-    } else {
-      statusDiv.className = "status offline";
-      statusDiv.innerHTML = "❌ Offline";
-    }
-  } catch (error) {
-    statusDiv.className = "status offline";
-    statusDiv.innerHTML = "⚠️ Soon..";
-  }
-}
-
-function openTOS() {
-  document.getElementById('tos-page').classList.add('active');
-}
-
-function closeTOS() {
-  document.getElementById('tos-page').classList.remove('active');
-}
-
-fetchServerStatus();
-setInterval(fetchServerStatus, 30000);
-</script>
-
+  <!-- AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx" crossorigin="anonymous"></script>
 </body>
 </html>
-
-
