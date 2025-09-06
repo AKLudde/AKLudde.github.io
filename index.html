@@ -5,8 +5,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>MultipleSMP — Play Now</title>
   <meta name="description" content="MultipleSMP — Join the server: MultipleSMP.net:30010. Epic SMP, live events, cosmetics, community." />
+
+  <!-- AdSense verification -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6385065284394598" crossorigin="anonymous"></script>
+
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
   <style>
     :root{
       --nav-height:72px;
@@ -106,7 +111,6 @@
       </div>
     </section>
 
-    <!-- Updates -->
     <section id="updates" class="reveal" aria-labelledby="updates-title">
       <h2 id="updates-title">Latest Updates</h2>
       <div class="updates-grid">
@@ -129,10 +133,9 @@
 
   <footer>
     <div class="ad-slot">
-      <!-- Google AdSense placeholder — replace with your own publisher & slot IDs -->
       <ins class="adsbygoogle"
            style="display:block"
-           data-ad-client="ca-pub-xxxxxxxxxxxxxxxx"
+           data-ad-client="ca-pub-6385065284394598"
            data-ad-slot="1234567890"
            data-ad-format="auto"
            data-full-width-responsive="true"></ins>
@@ -141,22 +144,18 @@
     © 2025 MultipleSMP • IP: MultipleSMP.net : 30010
   </footer>
 
-  <!-- Join modal -->
   <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true" role="dialog" aria-modal="true">
     <div class="modal" role="document" aria-labelledby="join-title">
       <h3 id="join-title">Join MultipleSMP</h3>
       <p class="muted">Copy the server details or follow the quick connect guide.</p>
-
       <div class="row">
         <div class="mono">MultipleSMP.net</div>
         <button class="btn btn-primary" data-copy="MultipleSMP.net">Copy</button>
       </div>
-
       <div class="row">
         <div class="mono">30010</div>
         <button class="btn btn-primary" data-copy="30010">Copy</button>
       </div>
-
       <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
         <button class="btn btn-ghost" id="modalClose">Close</button>
         <a class="btn btn-primary" href="/connect-instructions.html">How to connect</a>
@@ -164,27 +163,20 @@
     </div>
   </div>
 
-  <!-- Scripts -->
   <script>
-    // Copy buttons
     document.querySelectorAll('[data-copy]').forEach(btn=>{
       btn.addEventListener('click', async ()=>{
         const text = btn.getAttribute('data-copy');
         const old = btn.innerHTML;
         try{
           await navigator.clipboard.writeText(text);
-          btn.innerHTML = 'Copied!';
-          setTimeout(()=> btn.innerHTML = old, 1200);
-        }catch(err){
-          const ta = document.createElement('textarea');
-          ta.value = text; document.body.appendChild(ta); ta.select();
-          try{ document.execCommand('copy'); btn.innerHTML='Copied!'; setTimeout(()=>btn.innerHTML=old,1200);}catch(e){ alert('Copy failed.'); }
-          ta.remove();
+          btn.innerHTML = 'Copied!'; setTimeout(()=> btn.innerHTML = old,1200);
+        }catch{
+          const ta = document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); btn.innerHTML='Copied!'; setTimeout(()=>btn.innerHTML=old,1200);}catch(e){alert('Copy failed.')} ta.remove();
         }
       });
     });
 
-    // Smooth scroll Updates
     const updatesBtn = document.getElementById('updatesBtn');
     const updatesSec = document.getElementById('updates');
     updatesBtn.addEventListener('click', (e)=>{
@@ -193,21 +185,16 @@
       const top = updatesSec.getBoundingClientRect().top + window.scrollY - navHeight - 12;
       window.scrollTo({top, behavior:'smooth'});
       updatesSec.classList.add('visible');
-      document.querySelectorAll('#updates .card').forEach((c,i)=>{
-        setTimeout(()=>c.classList.add('visible'), 200*i);
-      });
+      document.querySelectorAll('#updates .card').forEach((c,i)=>{setTimeout(()=>c.classList.add('visible'),200*i);});
     });
 
-    // Intersection observer for reveal
     const reveals = document.querySelectorAll('.reveal');
     const revealObserver = new IntersectionObserver((entries, obs)=>{
       entries.forEach(entry=>{
         if(entry.isIntersecting){
           entry.target.classList.add('visible');
           if(entry.target.id==='updates'){
-            document.querySelectorAll('#updates .card').forEach((c,i)=>{
-              setTimeout(()=>c.classList.add('visible'), 200*i);
-            });
+            document.querySelectorAll('#updates .card').forEach((c,i)=>{setTimeout(()=>c.classList.add('visible'),200*i);});
           }
           obs.unobserve(entry.target);
         }
@@ -215,7 +202,6 @@
     },{threshold:0.15});
     reveals.forEach(r=>revealObserver.observe(r));
 
-    // Modal logic
     const playBtn = document.getElementById('playBtn');
     const backdrop = document.getElementById('modalBackdrop');
     const modalClose = document.getElementById('modalClose');
@@ -223,11 +209,8 @@
     function closeModal(){ backdrop.classList.remove('open'); backdrop.setAttribute('aria-hidden','true'); document.body.style.overflow=''; playBtn.focus(); }
     playBtn.addEventListener('click', openModal);
     modalClose.addEventListener('click', closeModal);
-    backdrop.addEventListener('click', e=>{ if(e.target === backdrop) closeModal(); });
-    window.addEventListener('keydown', e=>{ if(e.key === 'Escape') closeModal(); });
+    backdrop.addEventListener('click', e=>{ if(e.target===backdrop) closeModal(); });
+    window.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
   </script>
-
-  <!-- AdSense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-xxxxxxxxxxxxxxxx" crossorigin="anonymous"></script>
 </body>
 </html>
